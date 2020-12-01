@@ -1,0 +1,71 @@
+package com.uniquewords.project.service;
+
+import java.lang.Integer;
+import java.util.Map;
+import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+public class StringParsingServiceTest {
+
+    @Test
+    public void reverseString() {
+        StringParsingService service = new StringParsingService();
+        assertEquals("cba", service.reverseString("abc"));
+        assertEquals("My String", service.reverseString("gnirtS yM"));
+        assertEquals("", service.reverseString(""));
+    }
+
+    @Test
+    public void countStringExample1() {
+        StringParsingService service = new StringParsingService();
+        Map<String, Integer> wordsCounted = service.countString("banana frog banana");
+        assertNotNull(wordsCounted);
+        assertNotNull(wordsCounted.get("banana"));
+        assertEquals(wordsCounted.get("banana"), Integer.valueOf(2));
+        assertNotNull(wordsCounted.get("frog"));
+        assertEquals(wordsCounted.get("frog"), Integer.valueOf(1));
+    }
+
+    @Test
+    public void countStringExample2() {
+        StringParsingService service = new StringParsingService();
+        Map<String, Integer> wordsCounted = service.countString("banana frog dog cricket person banana leaf cat drink red red wallet dog cat leave drink banana dog banana cat");
+        assertNotNull(wordsCounted);
+        assertNotNull(wordsCounted.get("banana"));
+        assertEquals(wordsCounted.get("banana"), Integer.valueOf(4));
+        assertNotNull(wordsCounted.get("frog"));
+        assertEquals(wordsCounted.get("frog"), Integer.valueOf(1));
+        assertNotNull(wordsCounted.get("dog"));
+        assertEquals(wordsCounted.get("dog"), Integer.valueOf(3));
+        assertNotNull(wordsCounted.get("cricket"));
+        assertEquals(wordsCounted.get("cricket"), Integer.valueOf(1));
+        assertNotNull(wordsCounted.get("person"));
+        assertEquals(wordsCounted.get("person"), Integer.valueOf(1));
+        assertNotNull(wordsCounted.get("leaf"));
+        assertEquals(wordsCounted.get("leaf"), Integer.valueOf(1));
+        assertNotNull(wordsCounted.get("cat"));
+        assertEquals(wordsCounted.get("cat"), Integer.valueOf(3));
+        assertNotNull(wordsCounted.get("drink"));
+        assertEquals(wordsCounted.get("drink"), Integer.valueOf(2));
+        assertNotNull(wordsCounted.get("red"));
+        assertEquals(wordsCounted.get("red"), Integer.valueOf(2));
+        assertNotNull(wordsCounted.get("wallet"));
+        assertEquals(wordsCounted.get("wallet"), Integer.valueOf(1));
+        assertNotNull(wordsCounted.get("leave"));
+        assertEquals(wordsCounted.get("leave"), Integer.valueOf(1));
+    }
+
+    @Test
+    public void notCountEmptyString() {
+        StringParsingService service = new StringParsingService();
+        Map<String, Integer> wordsCounted = service.countString("");
+        assertNotNull(wordsCounted);
+        assertEquals(wordsCounted.size(), 0);
+
+        wordsCounted = service.countString("  ");
+        assertNotNull(wordsCounted);
+        assertEquals(wordsCounted.size(), 0);
+    }
+}

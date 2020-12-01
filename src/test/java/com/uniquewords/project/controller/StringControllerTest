@@ -1,0 +1,118 @@
+package com.uniquewords.project.controller;
+
+import java.lang.Integer;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+import com.uniquewords.service.StringParsingService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+
+@RunWith(SpringRunner.class)
+@WebMvcTest(StringController.class)
+public class StringControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private StringParsingService stringParsingService;
+
+    @Test
+    public void testReverseEndpoint() throws Exception {
+        String inputString = "abc";
+        String expectedResult = "cba";
+
+        when(stringParsingService.reverseString(inputString)).thenReturn(expectedResult);
+
+        mockMvc.perform(get("/reverse").param("input", inputString))
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedResult));
+    }
+
+    @Test
+    public void testCountExample1() throws Exception {
+        String inputString = "banana frog banana";
+        Map<String, Integer> expectedResult = new LinkedHashMap<String, Integer>();
+        expectedResult.put("banana", 2);
+        expectedResult.put("frog", 1);
+
+        when(stringParsingService.countString(inputString)).thenReturn(expectedResult);
+
+        mockMvc.perform(get("/count").param("input", inputString))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("banana").exists())
+                .andExpect(jsonPath("banana").value(2))
+                .andExpect(jsonPath("frog").value(1));
+    }
+
+    @Test
+    public void testCountExample2() throws Exception {
+        String inputString = "banana frog dog cricket person banana leaf cat drink red red wallet dog cat leave drink banana dog banana cat";
+        Map<String, Integer> expectedResult = new LinkedHashMap<String, Integer>();
+
+        expectedResult.put("banana", 4);
+        expectedResult.put("frog", 1);
+        expectedResult.put("dog", 3);
+        expectedResult.put("cricket", 1);
+        expectedResult.put("person", 1);
+        expectedResult.put("leaf", 1);
+        expectedResult.put("cat", 3);
+        expectedResult.put("drink", 2);
+        expectedResult.put("red", 2);
+        expectedResult.put("wallet", 1);
+        expectedResult.put("leave", 1);
+
+        when(stringParsingService.countString(inputString)).thenReturn(expectedResult);
+
+        mockMvc.perform(get("/count").param("input", inputString))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("banana").exists())
+                .andExpect(jsonPath("banana").value(4))
+                .andExpect(jsonPath("frog").value(1))
+                .andExpect(jsonPath("dog").value(3))
+                .andExpect(jsonPath("cricket").value(1))
+                .andExpect(jsonPath("person").value(1))
+                .andExpect(jsonPath("leaf").value(1))
+                .andExpect(jsonPath("cat").value(3))
+                .andExpect(jsonPath("drink").value(2))
+                .andExpect(jsonPath("red").value(2))
+                .andExpect(jsonPath("wallet").value(1))
+                .andExpect(jsonPath("leave").value(1));
+    }
+
+    @Test
+    public void testEmptyJson() throws Exception {
+        String inputString = "";
+        Map<String, Integer> expectedResult = new LinkedHashMap<String, Integer>();
+
+        when(stringParsingService.countString(inputString)).thenReturn(expectedResult);
+        mockMvc.perform(get("/count").param("input", inputString))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{}"));
+
+        inputString = "   ";
+        expectedResult = new LinkedHashMap<String, Integer>();
+
+        when(stringParsingService.countString(inputString)).thenReturn(expectedResult);
+        mockMvc.perform(get("/count").param("input", inputString))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{}"));
+    }
+
+}

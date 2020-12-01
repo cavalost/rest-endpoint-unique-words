@@ -1,0 +1,29 @@
+package com.uniquewords.project.controller;
+
+import java.util.Map;
+import java.lang.Integer;
+import com.uniquewords.project.service.StringParsingService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class StringController {
+
+    private final StringParsingService stringParsingService;
+
+    public StringController(StringParsingService stringParsingService) {
+        this.stringParsingService = stringParsingService;
+    }
+
+    @GetMapping("/reverse")
+    public String reverseString(@RequestParam("input") String input) {
+        return stringParsingService.reverseString(input);
+    }
+
+    @GetMapping("/count")
+    public Map<String, Integer> countString(@RequestParam("input") String input) {
+        return stringParsingService.countString(input);
+    }
+
+}
